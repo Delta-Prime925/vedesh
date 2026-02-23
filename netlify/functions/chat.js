@@ -5,7 +5,7 @@ exports.handler = async function(event, context) {
     const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
       method: "POST",
       headers: {
-        "Authorization": "Bearer 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",
+        "Authorization": ${process.env.OPENROUTER_API_KEY}`,
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
