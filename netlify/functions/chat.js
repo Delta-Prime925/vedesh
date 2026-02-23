@@ -5,7 +5,7 @@ exports.handler = async function(event, context) {
     const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
       method: "POST",
       headers: {
-        "Authorization": "Bearer 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",
+        "Authorization": "Bearer YOUR_OPENROUTER_API_KEY",
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
@@ -19,17 +19,20 @@ exports.handler = async function(event, context) {
 
     const data = await response.json();
 
+    const reply =
+      data?.choices?.[0]?.message?.content ||
+      data?.error?.message ||
+      "No response from AI";
+
     return {
       statusCode: 200,
-      body: JSON.stringify({
-        reply: data.choices[0].message.content
-      })
+      body: JSON.stringify({ reply })
     };
 
   } catch (error) {
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: "Something went wrong" })
+      body: JSON.stringify({ reply: "Server error" })
     };
   }
 };
