@@ -6,33 +6,32 @@
 <body>
   <h1>My AI Assistant</h1>
   <div id="chat"></div>
+
   <input id="input" placeholder="Ask something..." />
   <button onclick="sendMessage()">Send</button>
 
 <script>
 async function sendMessage() {
-  const input = document.getElementById("input").value;
+  const inputBox = document.getElementById("input");
+  const message = inputBox.value;
 
-  const response = await fetch(".netlify/functions/chat",
+  if (!message) return;
+
+  const response = await fetch("/.netlify/functions/chat", {
     method: "POST",
     headers: {
-      "Authorization": "Bearer sk-or-xxxxxxxxxxxx",
       "Content-Type": "application/json"
     },
-    body: JSON.stringify({
-      model: "mistralai/mistral-7b-instruct:free",
-      messages: [
-        { role: "system", content: "You are a helpful AI assistant." },
-        { role: "user", content: input }
-      ]
-    })
+    body: JSON.stringify({ message: message })
   });
 
   const data = await response.json();
 
-  document.getElementById("chat").innerHTML += 
-    "<p><b>You:</b> " + input + "</p>" +
-    "<p><b>AI:</b> " + data.choices[0].message.content + "</p>";
+  document.getElementById("chat").innerHTML +=
+    "<p><b>You:</b> " + message + "</p>" +
+    "<p><b>AI:</b> " + data.reply + "</p>";
+
+  inputBox.value = "";
 }
 </script>
 
